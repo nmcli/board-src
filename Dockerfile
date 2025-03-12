@@ -13,6 +13,9 @@ RUN mkdir -p /workspace/output && \
     chmod -R 777 /workspace/output && \
     chown -R nobody:nobody /workspace/output
 
+# Git이 특정 디렉토리를 안전한 디렉토리로 인식하도록 설정
+RUN git config --global --add safe.directory /workspace/output
+
 # 홈 디렉토리 설정
 ENV HOME=/workspace/output
 RUN mkdir -p $HOME && \
