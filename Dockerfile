@@ -30,3 +30,5 @@ WORKDIR /workspace/output
 
 # 기본 실행 명령어 유지
 ENTRYPOINT ["/ko-app/git-init"]
+ENTRYPOINT ["sh", "-c", "git config --global --add safe.directory /workspace/output && exec \"$@\"", "--"]
+
