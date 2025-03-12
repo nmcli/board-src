@@ -1,40 +1,17 @@
-#FROM default-route-openshift-image-registry.apps.ext2.mtp.local/registry/pipelines-git-init-rhel8:latest
-#WORKDIR /app
-#COPY target/board-1.0-SNAPSHOT.war board.war
-#CMD ["java", "-jar", "board.war"]
-
 # 기존 Tekton Git Clone 이미지 기반
-#FROM image-registry.openshift-image-registry.svc:5000/registry/pipelines-git-init-rhel8:latest
 FROM default-route-openshift-image-registry.apps.ext2.mtp.local/registry/pipelines-git-init-rhel8:latest
 
-# Root에서 작업 후 nobody 권한 설정
-USER root
-RUN mkdir -p /workspace/output && \
-    chmod -R 777 /workspace/output && \
-    chown -R nobody:nobody /workspace/output
+# ✅ 2️⃣ JBoss 실행 파일이 존재하는지 확인 (디버깅용)
+RUN echo "Checking JBoss files..." && ls -l /opt/jboss/wildfly/bin/ || echo "JBoss EAP is missing!"
 
-# Git이 특정 디렉토리를 안전한 디렉토리로 인식하도록 설정
-RUN git config --global --add safe.directory /workspace/output
+# ✅ 3️⃣ 소스 코드 복사 (애플리케이션 코드가 있을 경우)
+COPY . /opt/eap/
 
-# 홈 디렉토리 설정
-ENV HOME=/workspace/output
-RUN mkdir -p $HOME && \
-    chmod -R 777 $HOME && \
-    chown -R nobody:nobody $HOME
+# ✅ 4️⃣ OpenShift S2I 빌드 프로세스 실행 (assemble 단계 수행)
+RUN /opt/jboss/container/wildfly/s2i/assemble.sh
 
-# 다시 nobody 사용자로 실행
-USER nobody
+# ✅ 5️⃣ JBoss 실행 파일이 유지되는지 다시 확인 (디버깅)
+RUN echo "Post-assemble check" && ls -l /opt/jboss/wildfly/bin/
 
-# JBoss가 설치된 기본 이미지에서 올바른 디렉토리인지 확인
-RUN ls -l /opt/jboss/wildfly/bin/
-
-# 필요하면 JBoss 실행 파일을 다시 복사
-COPY --from=builder /opt/jboss/wildfly /opt/jboss/wildfly
-
-# 작업 디렉토리 설정
-WORKDIR /workspace/output
-
-# 기본 실행 명령어 유지
-ENTRYPOINT ["/ko-app/git-init"]
-ENTRYPOINT ["sh", "-c", "git config --global --add safe.directory /workspace/output && exec \"$@\"", "--"]
-
+# ✅ 6️⃣ 컨테이너 실행 시 OpenShift용 `run.sh` 실행
+CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
