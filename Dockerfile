@@ -7,4 +7,5 @@ WORKDIR /opt/eap
 RUN ls -l /opt/eap/bin/ || echo "JBoss is missing!"
 
 # ✅ 컨테이너 실행 시 `/opt/eap/bin/standalone.sh` 실행
-CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
+#CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
+CMD ["/bin/sh", "-c", "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0"]
