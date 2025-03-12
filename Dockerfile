@@ -17,12 +17,3 @@ RUN echo "Post-assemble check" && ls -l /opt/jboss/wildfly/bin/
 
 # ✅ 6️⃣ 컨테이너 실행 시 OpenShift용 `run.sh` 실행
 CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
-
-
-
-
-# ✅ S2I 스크립트가 있는지 확인 (디버깅)
-RUN ls -l /opt/jboss/container/wildfly/s2i/
-
-FROM registry.redhat.io/jboss-eap-7/eap74-openjdk17-openshift-rhel8 AS final
-COPY --from=base /opt/jboss/container/wildfly/s2i/ /opt/jboss/container/wildfly/s2i/
