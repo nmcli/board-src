@@ -25,6 +25,12 @@ RUN mkdir -p $HOME && \
 # 다시 nobody 사용자로 실행
 USER nobody
 
+# JBoss가 설치된 기본 이미지에서 올바른 디렉토리인지 확인
+RUN ls -l /opt/jboss/wildfly/bin/
+
+# 필요하면 JBoss 실행 파일을 다시 복사
+COPY --from=builder /opt/jboss/wildfly /opt/jboss/wildfly
+
 # 작업 디렉토리 설정
 WORKDIR /workspace/output
 
