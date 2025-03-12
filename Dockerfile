@@ -1,5 +1,7 @@
 # 기존 Tekton Git Clone 이미지 기반
-FROM default-route-openshift-image-registry.apps.ext2.mtp.local/registry/pipelines-git-init-rhel8:latest
+FROM default-route-openshift-image-registry.apps.ext2.mtp.local/registry/eap74-openjdk17-openshift-rhel8:latest
+WORKDIR /opt/jboss
+RUN ls -l /opt/jboss/container/wildfly/s2i/
 
 # ✅ 2️⃣ JBoss 실행 파일이 존재하는지 확인 (디버깅용)
 RUN echo "Checking JBoss files..." && ls -l /opt/jboss/wildfly/bin/ || echo "JBoss EAP is missing!"
@@ -15,3 +17,12 @@ RUN echo "Post-assemble check" && ls -l /opt/jboss/wildfly/bin/
 
 # ✅ 6️⃣ 컨테이너 실행 시 OpenShift용 `run.sh` 실행
 CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
+
+
+
+
+# ✅ S2I 스크립트가 있는지 확인 (디버깅)
+RUN ls -l /opt/jboss/container/wildfly/s2i/
+
+FROM registry.redhat.io/jboss-eap-7/eap74-openjdk17-openshift-rhel8 AS final
+COPY --from=base /opt/jboss/container/wildfly/s2i/ /opt/jboss/container/wildfly/s2i/
