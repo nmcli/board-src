@@ -13,14 +13,14 @@ ENV WILDFLY_BIND=0.0.0.0 \
     WILDFLY_ENABLE_HTTP=true
 
 # activemq-rar.rar 제거
-#RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar && \
-#    echo "Removing activemq-rar.rar from JBoss configuration..." && \
-#    sed -i '/activemq-rar.rar/d' /opt/eap/standalone/configuration/standalone-openshift.xml
-
-# ✅ activemq-rar.rar 제거 및 JBoss 설정에서 삭제
 RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar && \
     echo "Removing activemq-rar.rar from JBoss configuration..." && \
-    /opt/eap/bin/jboss-cli.sh --connect --commands="undeploy activemq-rar.rar --keep-content, quit"
+    sed -i '/activemq-rar.rar/d' /opt/eap/standalone/configuration/standalone-openshift.xml
+
+# ✅ activemq-rar.rar 제거 및 JBoss 설정에서 삭제
+#RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar && \
+#    echo "Removing activemq-rar.rar from JBoss configuration..." && \
+#    /opt/eap/bin/jboss-cli.sh --connect --commands="undeploy activemq-rar.rar --keep-content, quit"
 
 # ✅ 컨테이너 실행 시 `/opt/eap/bin/standalone.sh` 실행
 #CMD ["/bin/sh", "-c", "/opt/jboss/container/wildfly/s2i/run.sh"]
