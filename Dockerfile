@@ -1,14 +1,11 @@
+# 기본 컨테이너 이미지 사용
 FROM default-route-openshift-image-registry.apps.ext2.mtp.local/registry/eap74-openjdk17-openshift-rhel8:latest
 
 WORKDIR /opt/eap
 
-# ✅ JBoss 실행 파일이 있는지 확인
-RUN ls -l /opt/eap/bin/ || echo "JBoss is missing!"
+# ✅ 불필요한 환경 변수 제거
+# ✅ activemq-rar.rar 삭제만 유지 (필요 없는 JBoss 설정 변경 제거)
+RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar
 
-# ✅ HTTP(8080)로 실행되도록 환경 변수 설정
-ENV WILDFLY_BIND=0.0.0.0 \
-    WILDFLY_PORT=8080 \
-    WILDFLY_ENABLE_HTTP=true
-
-# ✅ 컨테이너 실행 시 `/opt/eap/bin/standalone.sh` 실행
-CMD ["/bin/sh", "-c", "exec /opt/eap/bin/standalone.sh -b 0.0.0.0 --server-config=standalone-openshift.xml"]
+# ✅ 기본 실행 방식 유지 (JBoss EAP 기본 실행 방식 유지)
+CMD ["/opt/jboss/container/wildfly/s2i/run.sh"]
