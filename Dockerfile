@@ -7,5 +7,8 @@ WORKDIR /opt/eap
 # ✅ activemq-rar.rar 삭제만 유지 (필요 없는 JBoss 설정 변경 제거)
 RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar
 
+# ✅ HTTP → HTTPS 리디렉션 제거
+RUN sed -i 's/redirect-socket="https"//g' /opt/eap/standalone/configuration/standalone-openshift.xml
+
 # ✅ 기본 실행 방식 유지 (JBoss EAP 기본 실행 방식 유지)
 CMD ["/opt/jboss/container/wildfly/s2i/run.sh"]
