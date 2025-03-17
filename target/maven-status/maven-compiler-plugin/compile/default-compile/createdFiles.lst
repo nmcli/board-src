@@ -1,5 +1,4 @@
 com\example\board\entity\Board$BoardBuilder.class
-com\example\demo\controller\HelloController.class
 com\example\board\controller\BoardController.class
 com\example\board\service\BoardService.class
 com\example\board\entity\Board.class
