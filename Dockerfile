@@ -5,10 +5,10 @@ WORKDIR /opt/eap
 # 불필요한 기본 환경 변수 제거 및 ActiveMQ RAR 커넥터 삭제
 RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar
 
-# JBoss 기본 보안 설정 제거 (default-security-domain 및 보안 도메인 비활성화)
+# 불필요한 보안 설정 제거
 RUN sed -i 's/default-security-domain="other"//g' /opt/eap/standalone/configuration/standalone-openshift.xml
 RUN sed -i '/<security-domain name="ApplicationDomain"/d' /opt/eap/standalone/configuration/standalone-openshift.xml
-RUN sed -i '/<application-security-domain name="other"/d' /opt/eap/standalone/configuration/standalone-openshift.xml
+RUN sed -i '/<application-security-domains>/,/<\/application-security-domains>/d' /opt/eap/standalone/configuration/standalone-openshift.xml
 
 # 애플리케이션 WAR 파일 복사하여 배포
 COPY target/board-1.0-SNAPSHOT.war /opt/eap/standalone/deployments/
