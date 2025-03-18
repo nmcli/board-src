@@ -8,9 +8,8 @@ RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar
 # ✅ `default-security-domain` 제거
 RUN sed -i 's/default-security-domain="other"//g' /opt/eap/standalone/configuration/standalone-openshift.xml
 
-# ✅ `security-domains` 내부 `security-domain` 삭제
-RUN sed -i '/<security-domain name="ApplicationDomain"/d' /opt/eap/standalone/configuration/standalone-openshift.xml
-RUN sed -i '/<\/security-domain>/d' /opt/eap/standalone/configuration/standalone-openshift.xml
+# ✅ `security-domains` 내부 `security-domain` 올바르게 닫기
+RUN sed -i '/<security-domain name="ApplicationDomain"/a\ \ \ \ </security-domain>' /opt/eap/standalone/configuration/standalone-openshift.xml
 
 # ✅ `application-security-domains` 필수 요소 추가
 RUN sed -i '/<application-security-domains>/a\ \ \ \ <application-security-domain name="other" security-domain="ApplicationDomain"/>' /opt/eap/standalone/configuration/standalone-openshift.xml
