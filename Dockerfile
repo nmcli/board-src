@@ -8,7 +8,7 @@ WORKDIR /opt/eap
 RUN rm -f /opt/eap/standalone/deployments/activemq-rar.rar
 
 # ✅ HTTP → HTTPS 리디렉션 제거
-RUN sed -i 's/redirect-socket="https"//g' /opt/eap/standalone/configuration/standalone-openshift.xml
+#RUN sed -i 's/redirect-socket="https"//g' /opt/eap/standalone/configuration/standalone-openshift.xml
 
 COPY target/board-1.0-SNAPSHOT.war /opt/eap/standalone/deployments/
 
